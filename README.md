@@ -1,6 +1,3 @@
-# DX Project Risk Diagnostic (Project Omen)
-**過去の炎上事例（判例）との類似性を判定するガバナンス・ツール**
-
 ## 🛠 Business Value / Concept
 **「なぜ、人は足りないのにプロジェクトは遅れるのか？」**
 
@@ -11,6 +8,9 @@ PMBOK等の管理手法では見落とされがちな**「コミュニケーシ�
 **【主な活用シーン】**
 * **経営層・発注者への啓蒙:** 無理な短納期要請や仕様変更が、品質と納期に与える破壊的影響を可視化する。
 * **リスク管理:** 「どのタイミングで、何人までなら追加投入しても安全か」の境界線を算出する。
+
+# DX Project Risk Diagnostic (Project Omen)
+**過去の炎上事例（判例）との類似性を判定するガバナンス・ツール**
 
 [![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://dx-risk-diagnostic-etshqp5dvhv6pwbvzacarb.streamlit.app/)
 > **👆 Click to Run App**: あなたのプロジェクトが「どの失敗パターン」に似ているかを診断します。
