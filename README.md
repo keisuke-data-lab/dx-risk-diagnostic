@@ -57,7 +57,23 @@
 
 ### 2. 類似度計算ロジック
 4次元空間におけるユークリッド距離を計算し、類似度（%）に変換します。
+📚 Failure Case Database実案件・判例・社会的インシデントを構造化データとして搭載しています。Case NameStructural Defect (死因)Mizuho 2002複雑性の暴走とマルチベンダー管理不全COCOA App多重下請けによるテスト責任の不在7pay経営層のIT無理解とセキュリティ軽視（ガバナンス欠如）SOFTIC判例ユーザーの協力義務違反と要件肥大化JCB基幹刷新終わらない要件定義とデスマーチSOFTIC 021 (九州屋)ユーザー過失型の失敗モデル📊 OutputPMの主観ではなく、数学的な「構造距離」で診断結果を出力します。最類似失敗ケース: 最も構造が似ている過去の失敗事例類似度スコア: 一致率（%）死因構造説明: なぜそのプロジェクトが失敗したかの解説レーダーチャート: 自社プロジェクトと失敗事例のギャップ分析🛠 Tech StackLanguage: Python 3.10+Framework: StreamlitLogic: NumPy (Vector Calculation), PandasVisualization: Plotly (Radar Chart)🔗 Related Project診断結果の「金額的インパクト（赤字額）」を知りたい場合はこちら💸 DX Project Budget Simulator仕様変更や技術的負債が、最終的にいくらの損失を生むかをシミュレーションするツール💻 How to RunBash# 1. Clone the repository
+git clone [https://github.com/keisuke-data-lab/dx-risk-diagnostic.git](https://github.com/keisuke-data-lab/dx-risk-diagnostic.git)
+cd dx-risk-diagnostic
 
-```python
-similarity = max(0, (1 - (euclidean_distance / 20)) * 100)
-# 類似度が60%未満の場合は「未分類リスク（Unclassified）」として安全側に判定
+# 2. Install dependencies
+pip install -r requirements.txt
+
+# 3. Run application
+streamlit run app.py
+Author: Keisuke NakamuraSpecialized in Governance Modeling & Structural Risk Analysis.
+---
+
+### 🚀 反映コマンド
+
+VS Codeのターミナルで以下を実行して完了です。
+
+```powershell
+git add README.md
+git commit -m "Finalize README: Complete documentation with S-Rank formatting"
+git push origin main
