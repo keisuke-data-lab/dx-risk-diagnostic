@@ -57,9 +57,12 @@
 
 ### 2. 類似度計算ロジック
 4次元空間におけるユークリッド距離を計算し、類似度（%）に変換します。
+```python
+similarity = max(0, (1 - (euclidean_distance / 20)) * 100)
+# 類似度が60%未満の場合は「未分類リスク（Unclassified）」として安全側に判定
 
 
-📚 Failure Case Database
+## 📚 Failure Case Database
 実案件・判例・社会的インシデントを構造化データとして搭載しています。
 
 Mizuho 2002: 複雑性の暴走とマルチベンダー管理不全
@@ -69,14 +72,14 @@ SOFTIC判例: ユーザーの協力義務違反と要件肥大化
 JCB基幹刷新: 終わらない要件定義とデスマーチ
 SOFTIC 021 (九州屋): ユーザー過失型の失敗モデル
 
-📊 Output
+## 📊 Output
 PMの主観ではなく、数学的な「構造距離」で診断結果を出力します。
 最類似失敗ケース: 最も構造が似ている過去の失敗事例
 類似度スコア: 一致率（%）
 死因構造説明: なぜそのプロジェクトが失敗したかの解説
 レーダーチャート: 自社プロジェクトと失敗事例のギャップ分析
 
-🛠 Tech Stack
+## 🛠 Tech Stack
 Language: Python 3.10+
 
 Framework: Streamlit
@@ -85,12 +88,12 @@ Logic: NumPy (Vector Calculation), Pandas
 
 Visualization: Plotly (Radar Chart)
 
-🔗 Related Project
+## 🔗 Related Project
 診断結果の「金額的インパクト（赤字額）」を知りたい場合はこちら
 
-💸 DX Project Budget Simulator 仕様変更や技術的負債が、最終的にいくらの損失を生むかをシミュレーションするツール
+## 💸 DX Project Budget Simulator 仕様変更や技術的負債が、最終的にいくらの損失を生むかをシミュレーションするツール
 
-💻 How to Run
+## 💻 How to Run
 Bash
 # 1. Clone the repository
 git clone [https://github.com/keisuke-data-lab/dx-risk-diagnostic.git](https://github.com/keisuke-data-lab/dx-risk-diagnostic.git)
