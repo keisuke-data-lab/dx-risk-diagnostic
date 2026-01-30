@@ -114,3 +114,5 @@ pip install -r requirements.txt
 
 # 3. Run application
 streamlit run app.py
+```
+Author: Keisuke Nakamura Specialized in Governance Modeling & Structural Risk Analysis.
