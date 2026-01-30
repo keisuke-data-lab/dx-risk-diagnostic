@@ -139,38 +139,8 @@ def main():
             alert_level = "Danger"
 
         # Radar Chart
+        # データを閉じるために、最初の要素を最後に追加する
         categories = list(VARIABLES.values())
-        fig = go.Figure()
+        categories_closed = categories + [categories[0]]
         
-        # ユーザー入力 (線を太く、塗りを薄くして重なりを防ぐ)
-        fig.add_trace(go.Scatterpolar(
-            r=user_inputs, theta=categories, fill='toself', name='Your Project',
-            line_color='#1f77b4', line_width=3, opacity=0.4
-        ))
-        
-        # 比較対象 (破線で表示)
-        if alert_level != "Unknown":
-            ref_name = top_match["case_name"].split(" ")[0]
-            fig.add_trace(go.Scatterpolar(
-                r=top_match["scores"], theta=categories, fill='none', name=f"Ref: {ref_name}",
-                line_color='#d62728', line_width=2, line_dash='dot'
-            ))
-
-        fig.update_layout(
-            polar=dict(radialaxis=dict(visible=True, range=[0, 10])),
-            showlegend=True,
-            title="Structural Gap Analysis",
-            height=400,
-            margin=dict(l=40, r=40, t=40, b=40)
-        )
-        st.plotly_chart(fig, use_container_width=True)
-        
-        # Rankings (データフレーム表示の改善)
-        with st.expander("全事例との類似度ランキング (詳細)"):
-            df_res = pd.DataFrame(results)
-            df_display = df_res[["case_name", "similarity", "risk_type"]].copy()
-            df_display["similarity"] = df_display["similarity"].apply(lambda x: f"{x:.1f}%")
-            st.table(df_display)
-
-if __name__ == "__main__":
-    main()
+        user_inputs_closed = user_inputs
