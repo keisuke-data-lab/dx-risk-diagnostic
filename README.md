@@ -31,6 +31,18 @@ PMの「勘」ではなく、過去の「死に至る病（失敗のDNA）」と
 | **Supply Chain Depth** | 多重下請け深度 | **COCOA**: 責任所在の不明確化による品質崩壊 |
 | **Client Immaturity** | 発注者能力の欠如 | **SOFTIC 021 (九州屋型)**: ユーザーの業務理解不足によるプロジェクト頓挫 |
 
+| Case Name (ID) | Category (類型) | Root Cause (死因・教訓) |
+| :--- | :--- | :--- |
+| **Mizuho_2002**<br>(みずほ銀行) | Complexity Overload<br>(複雑性の暴走) | **意思決定不全 (Decision Latency):**<br>複数ベンダーの利害調整に失敗し、仕様が統合されないままリリースを強行。 |
+| **7pay_Incident**<br>(セブンペイ) | Governance Fail<br>(ガバナンス欠如) | **経営の無理解 (Client Immaturity):**<br>セキュリティ（2段階認証）の欠如を経営層が認識せず、サービス開始直後に即死撤退。 |
+| **COCOA_App**<br>(COCOA) | Supply Chain Fragility<br>(多重下請け) | **責任所在の蒸発 (Supply Chain Depth):**<br>再委託が繰り返され、テスト工程の責任者が不在化。バグが数ヶ月放置された。 |
+| **JCB_Vendor**<br>(JCB基幹) | Death March<br>(ベンダー崩壊) | **要件の未決 (Req Immaturity):**<br>要件が決まらないまま開発に着手し、人海戦術（増員）で解決しようとして現場が崩壊。 |
+| **SOFTIC 009**<br>(タグ事件) | Scope Creep<br>(要件肥大化) | **法的紛争 (Legal Dispute):**<br>ユーザーが追加要望を繰り返し、要件を確定させなかったことによる債務不履行争い。 |
+| **SOFTIC 021**<br>(九州屋事件) | **User Competence Fail**<br>(ユーザー過失) | **GIGO (Garbage In, Garbage Out):**<br>ベンダーに過失はなかったが、ユーザーの提供情報が誤っていたためシステムが不適合。 |
+
+### The "Kyushuuya" Paradox (SOFTIC 021)
+特筆すべきは「九州屋事件」です。ベンダーに過失はなく、バグもありませんでしたが、**「ユーザー（発注者）の業務理解不足」**によりプロジェクトは失敗しました。本ツールは、この「ユーザー起因のリスク」を検知できる点が特徴です。
+
 ## 📊 Related Tool
 **定量的な「赤字額」をシミュレーションしたい場合はこちら**
 > **[💸 DX Project Budget Simulator](https://github.com/keisuke-data-lab/dx-project-failure-structure)**
