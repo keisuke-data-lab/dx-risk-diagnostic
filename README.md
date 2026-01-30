@@ -81,11 +81,8 @@ PMの主観ではなく、数学的な「構造距離」で診断結果を出力
 
 ## 🛠 Tech Stack
 Language: Python 3.10+
-
 Framework: Streamlit
-
 Logic: NumPy (Vector Calculation), Pandas
-
 Visualization: Plotly (Radar Chart)
 
 ## 🔗 Related Project
