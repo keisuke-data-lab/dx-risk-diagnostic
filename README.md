@@ -92,34 +92,3 @@ Visualization: Plotly (Radar Chart)
 診断結果の「金額的インパクト（赤字額）」を知りたい場合はこちら
 
 ## 💸 DX Project Budget Simulator 仕様変更や技術的負債が、最終的にいくらの損失を生むかをシミュレーションするツール
-
-## 💻 How to Run
-Bash
-# 1. Clone the repository
-git clone [https://github.com/keisuke-data-lab/dx-risk-diagnostic.git](https://github.com/keisuke-data-lab/dx-risk-diagnostic.git)
-cd dx-risk-diagnostic
-
-# 2. Install dependencies
-pip install -r requirements.txt
-
-# 3. Run application
-streamlit run app.py
-Author: Keisuke Nakamura Specialized in Governance Modeling & Structural Risk Analysis.
-
-
----
-
-### 🚀 GitHubへの反映コマンド
-
-VS Codeのターミナルで以下を実行してください。
-（※現在 `dx-risk-diagnostic` フォルダにいることを確認してください）
-
-```powershell
-# 1. READMEを更新
-git add README.md
-
-# 2. コミット
-git commit -m "Update README: Finalize documentation with S-Rank formatting"
-
-# 3. 送信
-git push origin main
