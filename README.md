@@ -61,7 +61,7 @@
 ```python
 similarity = max(0, (1 - (euclidean_distance / 20)) * 100)
 # 類似度が60%未満の場合は「未分類リスク（Unclassified）」として安全側に判定
-
+*
 📚 Failure Case Database
 実案件・判例・社会的インシデントを構造化データとして搭載しています。
 
