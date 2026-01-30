@@ -4,43 +4,51 @@ import numpy as np
 import plotly.graph_objects as go
 
 # -----------------------------------------------------------------------------
-# 1. Failure Case Database (判例・事例データベース)
+# 1. Failure Case Database
 # -----------------------------------------------------------------------------
-# 0-10のスコアで各事例の特徴を定義
-# [req_ambiguity, decision_speed, multi_vendor_layer, user_incompetence]
 FAILURE_CASES = {
     "Mizuho_2002 (みずほ銀行)": {
-        "scores": [8, 10, 9, 4],
+        "scores": [9, 10, 10, 6],
         "desc": "【複雑性の暴走】意思決定の遅れと、3行統合によるマルチベンダーの複雑化が原因。",
         "risk_type": "Complexity Overload"
     },
+    "7pay_Incident (セブンペイ)": {
+        "scores": [5, 2, 4, 9],
+        "desc": "【ガバナンス欠如】経営層のIT無理解。セキュリティ要件を軽視し、即死撤退に追い込まれた。",
+        "risk_type": "Governance Fail"
+    },
     "COCOA_App (COCOA)": {
-        "scores": [7, 6, 10, 5],
-        "desc": "【多重下請けの弊害】責任の所在が不明確になり、テスト工程と品質管理が機能不全に陥った。",
+        "scores": [8, 8, 9, 8],
+        "desc": "【責任の蒸発】多重下請け構造により、テスト工程の責任者が不在化し、不具合が放置された。",
         "risk_type": "Supply Chain Fragility"
     },
+    "JCB_Vendor (JCB基幹)": {
+        "scores": [9, 8, 7, 5],
+        "desc": "【ベンダー崩壊】要件が決まらないまま開発を強行し、過度な増員（人海戦術）で現場が瓦解。",
+        "risk_type": "Death March"
+    },
+    "SOFTIC_009 (タグ事件)": {
+        "scores": [9, 9, 3, 7],
+        "desc": "【要件肥大化】ユーザーの追加要望が止まらず、仕様凍結ができないまま法的紛争に発展。",
+        "risk_type": "Scope Creep"
+    },
     "SOFTIC_021 (九州屋事件)": {
-        "scores": [4, 5, 2, 10],
-        "desc": "【発注者能力の欠如】ベンダーに過失はなく、ユーザーが正しい業務要件を出せなかったために失敗。",
-        "risk_type": "User Incompetence (GIGO)"
+        "scores": [10, 3, 1, 10],
+        "desc": "【ユーザー過失】ベンダーに過失はなく、発注者の業務理解不足によりシステムが適合しなかった。",
+        "risk_type": "User Competence Fail (GIGO)"
     },
-    "7pay_Incident (セブンペイ)": {
-        "scores": [9, 8, 5, 7],
-        "desc": "【ガバナンス欠如】リリースの焦りからセキュリティ要件（2段階認証）を軽視し、即死撤退。",
-        "risk_type": "Governance Failure"
-    },
-    "Healthy_Project (理想的な状態)": {
-        "scores": [2, 2, 2, 2],
+    "Healthy_Project (理想基準)": {
+        "scores": [2, 2, 2, 2], # 現実的な健全ラインはALL1ではなく2程度
         "desc": "リスクがコントロールされた健全なプロジェクト状態。",
-        "risk_type": "Low Risk"
+        "risk_type": "Baseline (Success)"
     }
 }
 
 VARIABLES = {
-    "req_ambiguity": "Requirement Immaturity (要件定義の未熟度)",
-    "decision_speed": "Decision Latency (意思決定の遅延度)",
-    "multi_vendor_layer": "Supply Chain Depth (多重下請け深度)",
-    "user_incompetence": "Client Immaturity (発注者当事者能力の欠如)"
+    "req_ambiguity": "Requirement (要件)",
+    "decision_speed": "Decision (決断)",
+    "multi_vendor_layer": "SupplyChain (商流)",
+    "user_incompetence": "ClientCap (能力)"
 }
 
 # -----------------------------------------------------------------------------
@@ -48,18 +56,18 @@ VARIABLES = {
 # -----------------------------------------------------------------------------
 class RiskDiagnostic:
     def __init__(self, inputs):
-        self.inputs = np.array(inputs) # User input vector
+        self.inputs = np.array(inputs)
 
     def calculate_similarity(self):
         results = []
         for name, data in FAILURE_CASES.items():
             case_vector = np.array(data["scores"])
             
-            # ユークリッド距離を計算
+            # ユークリッド距離
             dist = np.linalg.norm(self.inputs - case_vector)
             
-            # 類似度スコア (距離0なら100%, 距離最大なら0%に正規化)
-            # 4次元空間の最大距離(0,0,0,0 to 10,10,10,10)は20
+            # 類似度スコア (最大距離20に対して正規化)
+            # 距離0で100%, 距離10で50%, 距離20で0%
             similarity = max(0, (1 - (dist / 20)) * 100)
             
             results.append({
@@ -70,7 +78,6 @@ class RiskDiagnostic:
                 "scores": data["scores"]
             })
         
-        # 類似度順にソート
         results.sort(key=lambda x: x["similarity"], reverse=True)
         return results
 
@@ -81,47 +88,32 @@ def main():
     st.set_page_config(page_title="Project Omen: Risk Diagnostic", layout="wide")
 
     st.title("⚖️ DX Project Failure Diagnostic")
-    st.subheader("(Project Omen) 過去の失敗構造との類似性診断")
-    
     st.markdown("""
-    プロジェクトの構造的特徴（4変数）を入力すると、過去の日本のシステム開発における
-    **「代表的な失敗事例（判例・炎上案件）」との類似度**を判定します。
-    「成功するか」ではなく**「どのパターンで失敗しそうか」**を予見するためのガバナンスツールです。
+    **「歴史は繰り返さないが、韻を踏む」**
+    あなたのプロジェクトのリスク構造が、過去のどの「大失敗事例」と似ているかを診断します。
     """)
     st.markdown("---")
 
     col_input, col_result = st.columns([1, 2])
 
     with col_input:
-        st.header("🛠 Diagnostic Parameters")
-        st.caption("各項目を 0(健全) 〜 10(深刻) で評価してください")
+        st.subheader("🛠 Diagnostic Inputs")
         
-        val_req = st.slider(
-            "1. 要件定義の未熟度", 0, 10, 5,
-            help="スコア高：「走りながら決める」「要件がフワッとしている」状態"
-        )
-        val_decision = st.slider(
-            "2. 意思決定の遅延度", 0, 10, 5,
-            help="スコア高：持ち帰りが多い、ステコミが開催されない、決裁者が不明"
-        )
-        val_supply = st.slider(
-            "3. 多重下請け深度", 0, 10, 5,
-            help="スコア高：再委託・再々委託が常態化し、実作業者の顔が見えない"
-        )
-        val_client = st.slider(
-            "4. 発注者能力の欠如", 0, 10, 5,
-            help="スコア高：丸投げ体質、現行業務を理解している担当者が不在"
-        )
+        def score_slider(label, key_desc):
+            return st.slider(
+                label, 0, 10, 5, 
+                help=f"0(健全) ⇔ 10(危険): {key_desc}"
+            )
+
+        # 定義の明確化
+        val_req = score_slider("1. 要件定義の未熟度", "仕様未確定のまま開発進行 / 走りながら考える")
+        val_decision = score_slider("2. 意思決定の遅延度", "持ち帰り頻発 / 決裁権限者の不在")
+        val_supply = score_slider("3. 多重下請け深度", "再委託・再々委託 / 実装者の顔が見えない")
+        val_client = score_slider("4. 発注者能力の欠如", "丸投げ体質 / 現行業務フローが不明")
         
         user_inputs = [val_req, val_decision, val_supply, val_client]
         
-        st.info("""
-        **変数の定義:**
-        * **Req Ambiguity**: SOFTIC 009（仕様凍結未完了）リスク
-        * **Decision Latency**: Mizuho（複雑性の暴走）リスク
-        * **Supply Chain**: COCOA（責任不在）リスク
-        * **Client Immaturity**: SOFTIC 021（九州屋パラドックス）リスク
-        """)
+        st.info("💡 **Hint:** 自分たちを良く見せようとせず、最悪の想定で入力してください。")
 
     # --- Calculation ---
     diagnostic = RiskDiagnostic(user_inputs)
@@ -129,58 +121,56 @@ def main():
     top_match = results[0]
 
     with col_result:
-        st.header("📊 Diagnosis Result")
+        st.subheader("📊 Diagnosis Result")
         
-        # Top Match Alert
-        if top_match["case_name"] == "Healthy_Project (理想的な状態)":
-            st.success(f"✅ **診断結果: 健全な状態です** (類似度: {top_match['similarity']:.1f}%)")
+        # 閾値ロジック (類似度が60%未満なら「該当なし」とする安全策)
+        THRESHOLD_SIMILARITY = 60.0
+
+        if top_match["case_name"] == "Healthy_Project (理想基準)":
+             st.success(f"✅ **健全な状態です** (類似度: {top_match['similarity']:.1f}%)")
+             alert_level = "Safe"
+        elif top_match['similarity'] < THRESHOLD_SIMILARITY:
+            st.warning(f"⚠️ **判定不能（Unclassified Risk）**\n\nどの過去事例とも構造が異なりますが、リスクが高い可能性があります（類似度 {top_match['similarity']:.1f}%）。")
+            alert_level = "Unknown"
         else:
-            st.error(f"⚠️ **警告: 「{top_match['case_name']}」型のリスク構造に酷似しています**")
-            st.metric("類似度 (Similarity Score)", f"{top_match['similarity']:.1f}%", delta="High Risk", delta_color="inverse")
-            st.markdown(f"**判定根拠:** {top_match['description']}")
+            st.error(f"💀 **警告: 「{top_match['case_name']}」の再来**")
+            st.markdown(f"**Structural Similarity:** `{top_match['similarity']:.1f}%`")
+            st.write(f"**死因分析:** {top_match['description']}")
+            alert_level = "Danger"
 
         # Radar Chart
         categories = list(VARIABLES.values())
-        
         fig = go.Figure()
         
-        # User Project
+        # ユーザー入力 (線を太く、塗りを薄くして重なりを防ぐ)
         fig.add_trace(go.Scatterpolar(
-            r=user_inputs,
-            theta=categories,
-            fill='toself',
-            name='Your Project',
-            line_color='blue',
-            opacity=0.8
+            r=user_inputs, theta=categories, fill='toself', name='Your Project',
+            line_color='#1f77b4', line_width=3, opacity=0.4
         ))
         
-        # Match Case
-        fig.add_trace(go.Scatterpolar(
-            r=top_match["scores"],
-            theta=categories,
-            fill='toself',
-            name=f"Reference: {top_match['case_name']}",
-            line_color='red',
-            opacity=0.3,
-            line_dash='dot'
-        ))
+        # 比較対象 (破線で表示)
+        if alert_level != "Unknown":
+            ref_name = top_match["case_name"].split(" ")[0]
+            fig.add_trace(go.Scatterpolar(
+                r=top_match["scores"], theta=categories, fill='none', name=f"Ref: {ref_name}",
+                line_color='#d62728', line_width=2, line_dash='dot'
+            ))
 
         fig.update_layout(
-            polar=dict(
-                radialaxis=dict(visible=True, range=[0, 10])
-            ),
+            polar=dict(radialaxis=dict(visible=True, range=[0, 10])),
             showlegend=True,
-            title="Structural Comparison (構造比較レーダー)",
-            height=500
+            title="Structural Gap Analysis",
+            height=400,
+            margin=dict(l=40, r=40, t=40, b=40)
         )
         st.plotly_chart(fig, use_container_width=True)
         
-        # Table of Distances
-        st.subheader("Reference Case Analysis")
-        df_res = pd.DataFrame(results)
-        df_res = df_res[["case_name", "similarity", "risk_type"]].copy()
-        df_res.columns = ["事例名 (Reference)", "類似度 (%)", "リスク類型"]
-        st.dataframe(df_res.style.background_gradient(subset=["類似度 (%)"], cmap="Reds"), use_container_width=True)
+        # Rankings (データフレーム表示の改善)
+        with st.expander("全事例との類似度ランキング (詳細)"):
+            df_res = pd.DataFrame(results)
+            df_display = df_res[["case_name", "similarity", "risk_type"]].copy()
+            df_display["similarity"] = df_display["similarity"].apply(lambda x: f"{x:.1f}%")
+            st.table(df_display)
 
 if __name__ == "__main__":
     main()
